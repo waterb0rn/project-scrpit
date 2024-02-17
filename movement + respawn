@@ -1,0 +1,46 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UIElements;
+
+public class movement : MonoBehaviour
+{
+    private float Move;
+    public float Jump;
+    public float Speed;
+    private bool isGrounded;
+    public Transform player;
+    public Transform respawnPoint;
+
+    private Rigidbody2D rb;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        isGrounded = true;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        Move = Input.GetAxis("Horizontal");
+
+        rb.velocity = new Vector2(Move * Speed, rb.velocity.y);
+
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded == true)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, Jump);
+            isGrounded = false;
+        }
+    }
+
+    void OnCollisionEnter2D()
+    {
+        isGrounded = true;
+    }
+    private void OnTriggerEnter2D()
+    {
+        player.position = respawnPoint.position;
+    }
+}
