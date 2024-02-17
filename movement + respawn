@@ -6,12 +6,14 @@ using UnityEngine.UIElements;
 public class movement : MonoBehaviour
 {
     private float Move;
-    public float Jump;
-    public float Speed;
+    [SerializeField] private float Jump;
+    [SerializeField] private float Speed;
+    [SerializeField] private float ShiftSpeed;
     private bool isGrounded;
-    public float Dash;
+    
     public Transform player;
     public Transform respawnPoint;
+    
 
     private Rigidbody2D rb;
 
@@ -35,10 +37,12 @@ public class movement : MonoBehaviour
             isGrounded = false;
         }
 
-        if(Input.GetKeyDown(KeyCode.Q))
+        if(Input.GetKey(KeyCode.LeftShift))
         {
-            rb.velocity = new Vector2(rb.velocity.x * Dash, rb.velocity.y);
+            rb.velocity = new Vector2 (rb.velocity.x * ShiftSpeed, rb.velocity.y);
         }
+        
+        
     }
 
     void OnCollisionEnter2D()
