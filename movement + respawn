@@ -1,3 +1,5 @@
+movement.cs
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -52,5 +54,95 @@ public class movement : MonoBehaviour
     private void OnTriggerEnter2D()
     {
         player.position = respawnPoint.position;
+    }
+}
+
+
+
+LaserScript.cs
+
+using System.Collections;
+using System.Collections.Generic;
+using System.Threading;
+using UnityEngine;
+
+public class LaserScript : MonoBehaviour
+{
+    [SerializeField] private float countdown;
+        
+    
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if(countdown <= 0)
+        {
+            gameObject.SetActive(false);
+        }
+        else
+        {
+            countdown -= Time.deltaTime;
+        }
+
+    }
+}
+
+
+
+
+LaserSpawner.cs
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using Unity.Mathematics;
+using UnityEngine;
+
+public class LaserSpawner : MonoBehaviour
+{
+    public GameObject laser;
+    
+    public float spawnRate = 3;
+    private float timer = 0;
+
+    [SerializeField] private float leftRight;
+    private float furthestLeft;
+    private float furthestRight;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        leftRight = 5;
+
+        furthestRight += leftRight;
+        furthestLeft -= leftRight;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (timer < spawnRate)
+        {
+            timer = timer + Time.deltaTime;
+        }
+        else
+        {
+            spawnLaser();
+            timer = 0;
+        }
+
+    }
+
+    void spawnLaser()
+    {
+        
+
+        Instantiate(laser, new Vector3(UnityEngine.Random.Range(furthestLeft, furthestRight), transform.position.y, 0), Quaternion.identity);
     }
 }
