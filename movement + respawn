@@ -12,6 +12,11 @@ public class movement : MonoBehaviour
     [SerializeField] private float Speed;
     [SerializeField] private float ShiftSpeed;
     private bool isGrounded;
+    private bool isSprinting;
+
+    [SerializeField] public Sprite spriteColor;
+    [SerializeField] private Sprite spriteColor1;
+    [SerializeField] private Sprite spriteColor2;
     
     public Transform player;
     public Transform respawnPoint;
@@ -41,9 +46,23 @@ public class movement : MonoBehaviour
 
         if(Input.GetKey(KeyCode.LeftShift))
         {
+            isSprinting = true;
             rb.velocity = new Vector2 (rb.velocity.x * ShiftSpeed, rb.velocity.y);
         }
+        else
+        {
+            isSprinting = false;
+
+        }
         
+        if(isSprinting == true)
+        {
+            spriteColor = spriteColor2;
+        }
+        else
+        { 
+            spriteColor = spriteColor1;
+        }
         
     }
 
