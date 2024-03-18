@@ -23,12 +23,14 @@ public class movement : MonoBehaviour
     
 
     private Rigidbody2D rb;
+    private SpriteRenderer sr;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         isGrounded = true;
+        sr = GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
@@ -63,6 +65,8 @@ public class movement : MonoBehaviour
         { 
             spriteColor = spriteColor1;
         }
+
+        sr.sprite = spriteColor;
         
     }
 
@@ -75,7 +79,6 @@ public class movement : MonoBehaviour
         player.position = respawnPoint.position;
     }
 }
-
 
 
 LaserScript.cs
