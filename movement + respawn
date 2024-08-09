@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class movement : MonoBehaviour
 {
@@ -20,7 +21,9 @@ public class movement : MonoBehaviour
     
     public Transform player;
     public Transform respawnPoint;
+    public Transform deadPoint;
     
+
 
     private Rigidbody2D rb;
     private SpriteRenderer sr;
@@ -67,7 +70,9 @@ public class movement : MonoBehaviour
         }
 
         sr.sprite = spriteColor;
+
         
+
     }
 
     void OnCollisionEnter2D()
@@ -76,9 +81,18 @@ public class movement : MonoBehaviour
     }
     private void OnTriggerEnter2D()
     {
+        player.position = deadPoint.position;
+        Invoke("RespawnPlayer", 1f);
+    }
+
+    public void RespawnPlayer()
+    {
+        
         player.position = respawnPoint.position;
     }
+
 }
+
 
 
 LaserScript.cs
