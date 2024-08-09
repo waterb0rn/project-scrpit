@@ -11,14 +11,20 @@ public class movement : MonoBehaviour
     private float Move;
     [SerializeField] private float Jump;
     [SerializeField] private float Speed;
-    [SerializeField] private float ShiftSpeed;
+    [SerializeField] private float DashSpeed;
     private bool isGrounded;
-    private bool isSprinting;
+    private bool isDashing;
+    private float dashDuration = 0.2f;
+    private bool canDash;
+    private bool inDashCD;
+    private float dashCD = 1.5f;
+
 
     [SerializeField] public Sprite spriteColor;
     [SerializeField] private Sprite spriteColor1;
     [SerializeField] private Sprite spriteColor2;
-    
+    [SerializeField] private Sprite spriteColor3;
+
     public Transform player;
     public Transform respawnPoint;
     public Transform deadPoint;
@@ -34,6 +40,8 @@ public class movement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         isGrounded = true;
         sr = GetComponent<SpriteRenderer>();
+
+        canDash = true;
     }
 
     // Update is called once per frame
@@ -49,23 +57,21 @@ public class movement : MonoBehaviour
             isGrounded = false;
         }
 
-        if(Input.GetKey(KeyCode.LeftShift))
+        if(Input.GetKeyDown(KeyCode.Q) && canDash == true)
         {
-            isSprinting = true;
-            rb.velocity = new Vector2 (rb.velocity.x * ShiftSpeed, rb.velocity.y);
-        }
-        else
-        {
-            isSprinting = false;
-
+            StartCoroutine(Dash());
         }
         
-        if(isSprinting == true)
+        if(isDashing == true)
         {
             spriteColor = spriteColor2;
         }
-        else
+        else if(inDashCD == true)
         { 
+            spriteColor = spriteColor3;
+        }
+        else
+        {
             spriteColor = spriteColor1;
         }
 
@@ -75,14 +81,24 @@ public class movement : MonoBehaviour
 
     }
 
-    void OnCollisionEnter2D()
+    void OnCollisionStay2D()
     {
         isGrounded = true;
     }
+    private void OnCollisionExit2D()
+    {
+        isGrounded = false;
+    }
+
+    
+
     private void OnTriggerEnter2D()
     {
-        player.position = deadPoint.position;
-        Invoke("RespawnPlayer", 1f);
+        if(isDashing == false)
+        {
+            player.position = deadPoint.position;
+            Invoke("RespawnPlayer", 1f);
+        }
     }
 
     public void RespawnPlayer()
@@ -91,7 +107,24 @@ public class movement : MonoBehaviour
         player.position = respawnPoint.position;
     }
 
+    private IEnumerator Dash()
+    {
+        canDash = false;
+        isDashing = true;
+        float originalGravity = rb.gravityScale;
+        rb.gravityScale = 0f;
+        rb.velocity = new Vector2(rb.velocity.x * DashSpeed, 0f);
+        yield return new WaitForSeconds(dashDuration);
+        rb.gravityScale = originalGravity;
+        isDashing = false;
+        inDashCD = true;
+        yield return new WaitForSeconds(dashCD);
+        canDash = true;
+        inDashCD = false;
+    }
+
 }
+
 
 
 
