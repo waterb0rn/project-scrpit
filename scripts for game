@@ -35,13 +35,15 @@ public class movement : MonoBehaviour
 
     private Rigidbody2D rb;
     private SpriteRenderer sr;
+    private TrailRenderer tr;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        isGrounded = true;
+        isGrounded = false;
         sr = GetComponent<SpriteRenderer>();
+        tr = GetComponent<TrailRenderer>();
 
         canDash = true;
     }
@@ -49,6 +51,11 @@ public class movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(isDashing == true)
+        {
+            return;
+        }
+
         Move = Input.GetAxis("Horizontal");
 
         rb.velocity = new Vector2(Move * Speed, rb.velocity.y);
@@ -62,19 +69,19 @@ public class movement : MonoBehaviour
             LastKeyPressed = KeyCode.D;
         }
 
+        if (Input.GetKeyDown(KeyCode.Q) && canDash == true && isGrounded == true && LastKeyPressed == KeyCode.A)
+        {
+            StartCoroutine(DashLeft());
+        }
+        if (Input.GetKeyDown(KeyCode.Q) && canDash == true && isGrounded == true && LastKeyPressed == KeyCode.D)
+        {
+            StartCoroutine(DashRight());
+        }
+
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded == true)
         {
             rb.velocity = new Vector2(rb.velocity.x, Jump);
             isGrounded = false;
-        }
-
-        if(Input.GetKeyDown(KeyCode.Q) && canDash == true && LastKeyPressed == KeyCode.A)
-        {
-            StartCoroutine(DashLeft());
-        }
-        if (Input.GetKeyDown(KeyCode.Q) && canDash == true && LastKeyPressed == KeyCode.D)
-        {
-            StartCoroutine(DashRight());
         }
 
         if (isDashing == true)
@@ -91,9 +98,6 @@ public class movement : MonoBehaviour
         }
 
         sr.sprite = spriteColor;
-
-        
-
     }
 
     void OnCollisionStay2D()
@@ -130,8 +134,10 @@ public class movement : MonoBehaviour
         isDashing = true;
         float originalGravity = rb.gravityScale;
         rb.gravityScale = 0f;
-        rb.AddForce(Vector2.right * DashSpeed);
+        rb.AddForce(new Vector2(2.75f * DashSpeed, 0f), ForceMode2D.Impulse);
+        tr.emitting = true;
         yield return new WaitForSeconds(dashDuration);
+        tr.emitting = false;
         rb.gravityScale = originalGravity;
         Invoke("noDash", 0.15f);
         inDashCD = true;
@@ -146,8 +152,10 @@ public class movement : MonoBehaviour
         isDashing = true;
         float originalGravity = rb.gravityScale;
         rb.gravityScale = 0f;
-        rb.AddForce(Vector2.left * DashSpeed);
+        rb.AddForce(new Vector2(-2.75f * DashSpeed, 0f), ForceMode2D.Impulse);
+        tr.emitting = true;
         yield return new WaitForSeconds(dashDuration);
+        tr.emitting = false;
         rb.gravityScale = originalGravity;
         Invoke("noDash",0.15f);
         yield return new WaitForSeconds(dashCD);
