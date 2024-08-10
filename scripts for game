@@ -21,7 +21,7 @@ public class movement : MonoBehaviour
     private float dashCD = 1.5f;
     private bool invinc = false;
 
-    private KeyCode LastKeyPressed;
+    private bool facingLeft;
 
     [SerializeField] public Sprite spriteColor;
     [SerializeField] private Sprite spriteColor1;
@@ -59,25 +59,13 @@ public class movement : MonoBehaviour
 
         Move = Input.GetAxis("Horizontal");
 
-        rb.velocity = new Vector2(Move * Speed, rb.velocity.y);
+        
 
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.Q) && canDash == true)
         {
-            LastKeyPressed = KeyCode.A;
+            StartCoroutine(Dash());
         }
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            LastKeyPressed = KeyCode.D;
-        }
-
-        if (Input.GetKeyDown(KeyCode.Q) && canDash == true && isGrounded == true && LastKeyPressed == KeyCode.A)
-        {
-            StartCoroutine(DashLeft());
-        }
-        if (Input.GetKeyDown(KeyCode.Q) && canDash == true && isGrounded == true && LastKeyPressed == KeyCode.D)
-        {
-            StartCoroutine(DashRight());
-        }
+        
 
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded == true)
         {
@@ -99,6 +87,16 @@ public class movement : MonoBehaviour
         }
 
         sr.sprite = spriteColor;
+
+        Invert();
+    }
+    private void FixedUpdate()
+    {
+        if(isDashing == true)
+        {
+            return;
+        }
+        rb.velocity = new Vector2(Move * Speed, rb.velocity.y);
     }
 
     void OnCollisionStay2D()
@@ -123,55 +121,46 @@ public class movement : MonoBehaviour
 
     public void RespawnPlayer()
     {
-        
+
         player.position = respawnPoint.position;
         invinc = true;
         Invoke("noInvinc", 0.15f);
     }
-
-    private IEnumerator DashRight()
+    private IEnumerator Dash()
     {
-        canDash = false;
         isDashing = true;
-        float originalGravity = rb.gravityScale;
-        rb.gravityScale = 0f;
-        rb.AddForce(new Vector2(2.75f * DashSpeed, 0f), ForceMode2D.Impulse);
-        tr.emitting = true;
-        yield return new WaitForSeconds(dashDuration);
-        tr.emitting = false;
-        rb.gravityScale = originalGravity;
-        Invoke("noDash", 0.15f);
-        inDashCD = true;
-        yield return new WaitForSeconds(dashCD);
-        canDash = true;
-        inDashCD = false;
-    }
-    private IEnumerator DashLeft()
-    {
         invinc = true;
         inDashCD = true;
         canDash = false;
-        isDashing = true;
+
         float originalGravity = rb.gravityScale;
         rb.gravityScale = 0f;
-        rb.AddForce(new Vector2(-2.75f * DashSpeed, 0f), ForceMode2D.Impulse);
+        rb.velocity = new Vector2(transform.localScale.x * DashSpeed, 0f);
+        yield return new WaitForSeconds(0.05f);
         tr.emitting = true;
         yield return new WaitForSeconds(dashDuration);
         tr.emitting = false;
         rb.gravityScale = originalGravity;
-        Invoke("noDash", 0f);
+        isDashing = false;
         Invoke("noInvinc", 0.1f);
         yield return new WaitForSeconds(dashCD);
         canDash = true;
         inDashCD = false;
     }
-    void noDash()
-    {
-        isDashing = false;
-    }
     void noInvinc()
     {
         invinc = false;
+    }
+
+    private void Invert()
+    {
+        if (facingLeft && Move > 0f || !facingLeft && Move < 0f)
+        {
+            Vector3 localScale = transform.localScale;
+            facingLeft = !facingLeft;
+            localScale.x *= -1f;
+            transform.localScale = localScale;
+        }
     }
 
 }
