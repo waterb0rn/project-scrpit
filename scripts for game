@@ -15,7 +15,7 @@ public class movement : MonoBehaviour
     [SerializeField] private float DashSpeed;
     private bool isGrounded;
     private bool isDashing;
-    private float dashDuration = 0.2f;
+    private float dashDuration = 0.265f;
     private bool canDash;
     private bool inDashCD;
     private float dashCD = 1.5f;
@@ -148,6 +148,7 @@ public class movement : MonoBehaviour
     }
     private IEnumerator DashLeft()
     {
+        invinc = true;
         inDashCD = true;
         canDash = false;
         isDashing = true;
@@ -158,7 +159,8 @@ public class movement : MonoBehaviour
         yield return new WaitForSeconds(dashDuration);
         tr.emitting = false;
         rb.gravityScale = originalGravity;
-        Invoke("noDash",0.15f);
+        Invoke("noDash", 0f);
+        Invoke("noInvinc", 0.1f);
         yield return new WaitForSeconds(dashCD);
         canDash = true;
         inDashCD = false;
