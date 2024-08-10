@@ -19,6 +19,7 @@ public class movement : MonoBehaviour
     private bool canDash;
     private bool inDashCD;
     private float dashCD = 1.5f;
+    private bool invinc = false;
 
     private KeyCode LastKeyPressed;
 
@@ -84,7 +85,7 @@ public class movement : MonoBehaviour
             isGrounded = false;
         }
 
-        if (isDashing == true)
+        if (isDashing == true || invinc == true)
         {
             spriteColor = spriteColor2;
         }
@@ -113,7 +114,7 @@ public class movement : MonoBehaviour
 
     private void OnTriggerEnter2D()
     {
-        if(isDashing == false)
+        if(invinc == false)
         {
             player.position = deadPoint.position;
             Invoke("RespawnPlayer", 1.5f);
@@ -124,8 +125,8 @@ public class movement : MonoBehaviour
     {
         
         player.position = respawnPoint.position;
-        isDashing = true;
-        Invoke("noDash", 0.15f);
+        invinc = true;
+        Invoke("noInvinc", 0.15f);
     }
 
     private IEnumerator DashRight()
@@ -166,10 +167,12 @@ public class movement : MonoBehaviour
     {
         isDashing = false;
     }
+    void noInvinc()
+    {
+        invinc = false;
+    }
 
 }
-
-
 
 
 
