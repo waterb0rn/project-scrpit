@@ -110,9 +110,9 @@ public class movement : MonoBehaviour
 
     
 
-    private void OnTriggerEnter2D()
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        if(invinc == false)
+        if(other.gameObject.CompareTag("Respawn") && invinc == false)
         {
             player.position = deadPoint.position;
             Invoke("RespawnPlayer", 1.5f);
@@ -166,43 +166,6 @@ public class movement : MonoBehaviour
 }
 
 
-
-LaserScript.cs
-
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
-using UnityEngine;
-
-public class LaserScript : MonoBehaviour
-{
-    [SerializeField] private float countdown;
-        
-    
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if(countdown <= 0)
-        {
-            gameObject.SetActive(false);
-        }
-        else
-        {
-            countdown -= Time.deltaTime;
-        }
-
-    }
-}
-
-
-
-
 LaserSpawner.cs
 
 using System;
@@ -232,19 +195,6 @@ public class LaserSpawner : MonoBehaviour
 
     private float laserPos = 1;
 
-    [SerializeField] private float leftRight;
-    private float furthestLeft;
-    private float furthestRight;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        leftRight = 5;
-
-        furthestRight += leftRight;
-        furthestLeft -= leftRight;
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -255,52 +205,151 @@ public class LaserSpawner : MonoBehaviour
         else
         {
             timer = 0;
-            if(laserPos == 1)
-            {
-                Instantiate(laser, new Vector3(One.position.x, transform.position.y, 0), Quaternion.identity);
-                laserPos += 1;
-            }
-            else if (laserPos == 2)
-            {
-                Instantiate(laser, new Vector3(Two.position.x, transform.position.y, 0), Quaternion.identity);
-                laserPos += 1;
-            }
-            else if(laserPos == 3)
-            {
-                Instantiate(laser, new Vector3(Three.position.x, transform.position.y, 0), Quaternion.identity);
-                laserPos += 1;
-            }
-            else if (laserPos == 4)
-            {
-                Instantiate(laser, new Vector3(Four.position.x, transform.position.y, 0), Quaternion.identity);
-                laserPos += 1;
-            }
-            else if (laserPos == 5)
-            {
-                Instantiate(laser, new Vector3(Five.position.x, transform.position.y, 0), Quaternion.identity);
-                laserPos += 1;
-            }
-            else if (laserPos == 6)
-            {
-                Instantiate(laser, new Vector3(Six.position.x, transform.position.y, 0), Quaternion.identity);
-                laserPos += 1;
-            }
-            else if (laserPos == 7)
-            {
-                Instantiate(laser, new Vector3(Seven.position.x, transform.position.y, 0), Quaternion.identity);
-                laserPos += 1;
-            }
-            else if (laserPos == 8)
-            {
-                Instantiate(laser, new Vector3(Eight.position.x, transform.position.y, 0), Quaternion.identity);
-                laserPos += 1;
-            }
-            else if (laserPos == 9)
-            {
-                Instantiate(laser, new Vector3(Nine.position.x, transform.position.y, 0), Quaternion.identity);
-                laserPos = 1;
-            }
+            checkLaserPos();
+        }
+
+    }
+    private void checkLaserPos()
+    {
+        if (laserPos == 1)
+        {
+            Instantiate(laser, new Vector3(One.position.x, transform.position.y, 0), Quaternion.identity);
+            laserPos += 1;
+        }
+        else if (laserPos == 2)
+        {
+            Instantiate(laser, new Vector3(Two.position.x, transform.position.y, 0), Quaternion.identity);
+            laserPos += 1;
+        }
+        else if (laserPos == 3)
+        {
+            Instantiate(laser, new Vector3(Three.position.x, transform.position.y, 0), Quaternion.identity);
+            laserPos += 1;
+        }
+        else if (laserPos == 4)
+        {
+            Instantiate(laser, new Vector3(Four.position.x, transform.position.y, 0), Quaternion.identity);
+            laserPos += 1;
+        }
+        else if (laserPos == 5)
+        {
+            Instantiate(laser, new Vector3(Five.position.x, transform.position.y, 0), Quaternion.identity);
+            laserPos += 1;
+        }
+        else if (laserPos == 6)
+        {
+            Instantiate(laser, new Vector3(Six.position.x, transform.position.y, 0), Quaternion.identity);
+            laserPos += 1;
+        }
+        else if (laserPos == 7)
+        {
+            Instantiate(laser, new Vector3(Seven.position.x, transform.position.y, 0), Quaternion.identity);
+            laserPos += 1;
+        }
+        else if (laserPos == 8)
+        {
+            Instantiate(laser, new Vector3(Eight.position.x, transform.position.y, 0), Quaternion.identity);
+            laserPos += 1;
+        }
+        else if (laserPos == 9)
+        {
+            Instantiate(laser, new Vector3(Nine.position.x, transform.position.y, 0), Quaternion.identity);
+            laserPos = 1;
+        }
+    }
+}
+
+
+LaserSpawner2.cs
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UIElements;
+
+public class LaserSpawner2 : MonoBehaviour
+{
+    [SerializeField] private GameObject laser;
+    private float laserPos = 1;
+    private float spawnRate = 2.5f;
+    private float timer;
+
+    [SerializeField] private Transform laserPos1;
+    [SerializeField] private Transform laserPos2;
+    [SerializeField] private Transform laserPos3;
+    [SerializeField] private Transform laserPos4;
+
+    
+    // Update is called once per frame
+    void Update()
+    {
+        if(timer < spawnRate)
+        {
+            timer += Time.deltaTime;
+        }
+        else
+        {
+            timer = 0;
+            CheckLaserPos();
+        }
+    }
+
+    void CheckLaserPos()
+    {
+        if (laserPos == 1)
+        {
+            Instantiate(laser, new Vector3(transform.position.x, laserPos1.position.y, 0), Quaternion.identity);
+            laserPos += 1;
+        }
+        else if (laserPos == 2)
+        {
+            Instantiate(laser, new Vector3(transform.position.x, laserPos2.position.y, 0), Quaternion.identity);
+            laserPos += 1;
+        }
+        else if (laserPos == 3)
+        {
+            Instantiate(laser, new Vector3(transform.position.x, laserPos3.position.y, 0), Quaternion.identity);
+            laserPos += 1;
+        }
+        else
+        {
+            Instantiate(laser, new Vector3(transform.position.x, laserPos4.position.y, 0), Quaternion.identity);
+            laserPos = 1;
+        }
+    }
+}
+
+
+LaserScript.cs
+
+using System.Collections;
+using System.Collections.Generic;
+using System.Threading;
+using UnityEngine;
+
+public class LaserScript : MonoBehaviour
+{
+    private float countdown = 1;
+        
+    
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if(countdown <= 0)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            countdown -= Time.deltaTime;
         }
 
     }
 }
+
