@@ -1,7 +1,10 @@
+PlayerScript.cs
+
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 using static UnityEditor.Experimental.GraphView.GraphView;
 
@@ -22,6 +25,7 @@ public class movement : MonoBehaviour
     private bool inEscape;
     private float currentTimeScale;
     private bool facingLeft;
+    public GameObject EscapeMenuUI;
 
     [SerializeField] public Sprite spriteColor;
     [SerializeField] private Sprite spriteColor1;
@@ -52,19 +56,17 @@ public class movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Escape) && inEscape == false)
-        {
-            PressEscape();
-        }
-        else if(Input.GetKeyDown(KeyCode.Escape) && inEscape)
-        {
-            UnEscape();
-        }
         if (isDashing == true || inEscape == true)
         {
             return;
         }
 
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            PressEscape();
+            EscapeMenuUI.SetActive(true);
+        }
+        
         Move = Input.GetAxis("Horizontal");
 
         if (Input.GetKeyDown(KeyCode.Q) && canDash == true)
@@ -178,6 +180,12 @@ public class movement : MonoBehaviour
     {
         Time.timeScale = currentTimeScale;
         inEscape = false;
+        EscapeMenuUI.SetActive(false);
+    }
+
+    public void QuitToMenu()
+    {
+        SceneManager.LoadScene(0);
     }
 }
 
