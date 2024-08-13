@@ -22,7 +22,7 @@ public class movement : MonoBehaviour
     private float dashCD = 1.5f;
     private bool invinc;
 
-    private bool inEscape;
+    private bool inEscape = false;
     private float currentTimeScale;
     private bool facingLeft;
     public GameObject EscapeMenuUI;
@@ -56,17 +56,20 @@ public class movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape) && inEscape == false)
+        {
+            PressEscape();
+        }
+        else if(Input.GetKeyDown(KeyCode.Escape) && inEscape == true)
+        {
+            UnEscape();
+        }
+
         if (isDashing == true || inEscape == true)
         {
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            PressEscape();
-            EscapeMenuUI.SetActive(true);
-        }
-        
         Move = Input.GetAxis("Horizontal");
 
         if (Input.GetKeyDown(KeyCode.Q) && canDash == true)
@@ -175,6 +178,7 @@ public class movement : MonoBehaviour
         currentTimeScale = Time.timeScale;
         Time.timeScale = 0;
         inEscape = true;
+        EscapeMenuUI.SetActive(true);
     }
     public void UnEscape()
     {
@@ -185,10 +189,10 @@ public class movement : MonoBehaviour
 
     public void QuitToMenu()
     {
+        Time.timeScale = currentTimeScale;
         SceneManager.LoadScene(0);
     }
 }
-
 
 LaserSpawner.cs
 
