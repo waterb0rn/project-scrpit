@@ -27,7 +27,7 @@ public class movement : MonoBehaviour
     private bool facingLeft;
     public GameObject EscapeMenuUI;
 
-    [SerializeField] public Sprite spriteColor;
+    [SerializeField] private Sprite spriteColor;
     [SerializeField] private Sprite spriteColor1;
     [SerializeField] private Sprite spriteColor2;
     [SerializeField] private Sprite spriteColor3;
@@ -205,8 +205,8 @@ using UnityEngine;
 
 public class LaserSpawner : MonoBehaviour
 {
-    public GameObject laser;
-    public GameObject preLaser;
+    [SerializeField] private GameObject laser;
+    [SerializeField] private GameObject preLaser;
 
     [SerializeField] private float spawnRate;
     private float timer = 0;
@@ -255,14 +255,12 @@ using UnityEngine.UIElements;
 public class LaserSpawner2 : MonoBehaviour
 {
     [SerializeField] private GameObject laser;
-    private float laserPos = 1;
     private float spawnRate = 2.5f;
     private float timer;
 
-    [SerializeField] private Transform laserPos1;
-    [SerializeField] private Transform laserPos2;
-    [SerializeField] private Transform laserPos3;
-    [SerializeField] private Transform laserPos4;
+    public Transform[] laserPos;
+    private int laserPosIndex = 0;
+
 
     
     // Update is called once per frame
@@ -275,35 +273,23 @@ public class LaserSpawner2 : MonoBehaviour
         else
         {
             timer = 0;
-            CheckLaserPos();
+            SpawnLaser();
         }
     }
 
-    void CheckLaserPos()
+    void SpawnLaser()
     {
-        if (laserPos == 1)
+        if(laserPosIndex >= 5)
         {
-            Instantiate(laser, new Vector3(transform.position.x, laserPos1.position.y, 0), Quaternion.identity);
-            laserPos += 1;
-        }
-        else if (laserPos == 2)
-        {
-            Instantiate(laser, new Vector3(transform.position.x, laserPos2.position.y, 0), Quaternion.identity);
-            laserPos += 1;
-        }
-        else if (laserPos == 3)
-        {
-            Instantiate(laser, new Vector3(transform.position.x, laserPos3.position.y, 0), Quaternion.identity);
-            laserPos += 1;
+            laserPosIndex = 0;
         }
         else
         {
-            Instantiate(laser, new Vector3(transform.position.x, laserPos4.position.y, 0), Quaternion.identity);
-            laserPos = 1;
+            Instantiate(laser, new Vector3(transform.position.x, laserPos[laserPosIndex].position.y, 0f), Quaternion.identity);
+            laserPosIndex++;
         }
     }
 }
-
 
 LaserScript.cs
 
@@ -373,17 +359,9 @@ public class BallScript : MonoBehaviour
 
     [SerializeField] private GameObject ball;
 
-    private float currentSpawn = 1;
-    public Transform spawn1;
-    public Transform spawn2;
-    public Transform spawn3;
-    public Transform spawn4;
-    public Transform spawn5;
-    public Transform spawn6;
-    public Transform spawn7;
-    public Transform spawn8;
-    public Transform spawn9;
-    public Transform spawn10;
+    public Transform[] currentSpawn;
+    private int currentSpawnIndex = 0;
+    
 
     private float timer;
     [SerializeField] private float spawnRate;
@@ -391,7 +369,7 @@ public class BallScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        checkBallSpawn();
+        SpawnBall();
     }
 
     // Update is called once per frame
@@ -400,7 +378,7 @@ public class BallScript : MonoBehaviour
         
         if(timer >= spawnRate)
         {
-            checkBallSpawn();
+            SpawnBall();
             timer = 0;
         }
         else if(timer < spawnRate)
@@ -409,57 +387,16 @@ public class BallScript : MonoBehaviour
         }
     }
 
-    private void checkBallSpawn()
+    private void SpawnBall()
     {
-        if(currentSpawn == 1)
+        if(currentSpawnIndex >= 10)
         {
-            Instantiate(ball, new Vector3(spawn1.position.x, spawn1.position.y, 0f), Quaternion.identity);
-            currentSpawn += 1;
+            currentSpawnIndex = 0;
         }
-        else if(currentSpawn == 2)
+        else
         {
-            Instantiate(ball, new Vector3(spawn2.position.x, spawn2.position.y, 0f), Quaternion.identity);
-            currentSpawn += 1;
-        }
-        else if (currentSpawn == 3)
-        {
-            Instantiate(ball, new Vector3(spawn3.position.x, spawn3.position.y, 0f), Quaternion.identity);
-            currentSpawn += 1;
-        }
-        else if (currentSpawn == 4)
-        {
-            Instantiate(ball, new Vector3(spawn4.position.x, spawn4.position.y, 0f), Quaternion.identity);
-            currentSpawn += 1;
-        }
-        else if (currentSpawn == 5)
-        {
-            Instantiate(ball, new Vector3(spawn5.position.x, spawn5.position.y, 0f), Quaternion.identity);
-            currentSpawn += 1;
-        }
-        else if (currentSpawn == 6)
-        {
-            Instantiate(ball, new Vector3(spawn6.position.x, spawn6.position.y, 0f), Quaternion.identity);
-            currentSpawn += 1;
-        }
-        else if (currentSpawn == 7)
-        {
-            Instantiate(ball, new Vector3(spawn7.position.x, spawn7.position.y, 0f), Quaternion.identity);
-            currentSpawn += 1;
-        }
-        else if (currentSpawn == 8)
-        {
-            Instantiate(ball, new Vector3(spawn8.position.x, spawn8.position.y, 0f), Quaternion.identity);
-            currentSpawn += 1;
-        }
-        else if (currentSpawn == 9)
-        {
-            Instantiate(ball, new Vector3(spawn9.position.x, spawn9.position.y, 0f), Quaternion.identity);
-            currentSpawn += 1;
-        }
-        else if (currentSpawn == 10)
-        {
-            Instantiate(ball, new Vector3(spawn10.position.x, spawn10.position.y, 0f), Quaternion.identity);
-            currentSpawn = 1;
+            Instantiate(ball, new Vector3(currentSpawn[currentSpawnIndex].position.x, currentSpawn[currentSpawnIndex].position.y, 0f), Quaternion.identity);
+            currentSpawnIndex++;
         }
     }
 }
