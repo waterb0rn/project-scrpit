@@ -403,3 +403,108 @@ public class MainMenuScript : MonoBehaviour
 }
 
 
+BallSpawner.cs
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEditor.Build;
+using UnityEngine;
+
+public class BallScript : MonoBehaviour
+{
+    
+
+    [SerializeField] private GameObject ball;
+
+    private float currentSpawn = 1;
+    public Transform spawn1;
+    public Transform spawn2;
+    public Transform spawn3;
+    public Transform spawn4;
+    public Transform spawn5;
+    public Transform spawn6;
+    public Transform spawn7;
+    public Transform spawn8;
+    public Transform spawn9;
+    public Transform spawn10;
+
+    private float timer;
+    [SerializeField] private float spawnRate;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        checkBallSpawn();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+        if(timer >= spawnRate)
+        {
+            checkBallSpawn();
+            timer = 0;
+        }
+        else if(timer < spawnRate)
+        {
+            timer += Time.deltaTime;
+        }
+    }
+
+    private void checkBallSpawn()
+    {
+        if(currentSpawn == 1)
+        {
+            Instantiate(ball, new Vector3(spawn1.position.x, spawn1.position.y, 0f), Quaternion.identity);
+            currentSpawn += 1;
+        }
+        else if(currentSpawn == 2)
+        {
+            Instantiate(ball, new Vector3(spawn2.position.x, spawn2.position.y, 0f), Quaternion.identity);
+            currentSpawn += 1;
+        }
+        else if (currentSpawn == 3)
+        {
+            Instantiate(ball, new Vector3(spawn3.position.x, spawn3.position.y, 0f), Quaternion.identity);
+            currentSpawn += 1;
+        }
+        else if (currentSpawn == 4)
+        {
+            Instantiate(ball, new Vector3(spawn4.position.x, spawn4.position.y, 0f), Quaternion.identity);
+            currentSpawn += 1;
+        }
+        else if (currentSpawn == 5)
+        {
+            Instantiate(ball, new Vector3(spawn5.position.x, spawn5.position.y, 0f), Quaternion.identity);
+            currentSpawn += 1;
+        }
+        else if (currentSpawn == 6)
+        {
+            Instantiate(ball, new Vector3(spawn6.position.x, spawn6.position.y, 0f), Quaternion.identity);
+            currentSpawn += 1;
+        }
+        else if (currentSpawn == 7)
+        {
+            Instantiate(ball, new Vector3(spawn7.position.x, spawn7.position.y, 0f), Quaternion.identity);
+            currentSpawn += 1;
+        }
+        else if (currentSpawn == 8)
+        {
+            Instantiate(ball, new Vector3(spawn8.position.x, spawn8.position.y, 0f), Quaternion.identity);
+            currentSpawn += 1;
+        }
+        else if (currentSpawn == 9)
+        {
+            Instantiate(ball, new Vector3(spawn9.position.x, spawn9.position.y, 0f), Quaternion.identity);
+            currentSpawn += 1;
+        }
+        else if (currentSpawn == 10)
+        {
+            Instantiate(ball, new Vector3(spawn10.position.x, spawn10.position.y, 0f), Quaternion.identity);
+            currentSpawn = 1;
+        }
+    }
+}
+
+
