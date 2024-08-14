@@ -211,82 +211,39 @@ public class LaserSpawner : MonoBehaviour
     [SerializeField] private float spawnRate;
     private float timer = 0;
 
-    public Transform One;
-    public Transform Two;
-    public Transform Three;
-    public Transform Four;
-    public Transform Five;
-    public Transform Six;
-    public Transform Seven;
-    public Transform Eight;
-    public Transform Nine;
+    public Transform[] laserPos;
 
-    private float laserPos = 1;
+    private int laserPosIndex = 0;
 
     // Update is called once per frame
     void Update()
     {
         if (timer <= spawnRate)
         {
-            timer = timer + Time.deltaTime;
+            timer += Time.deltaTime;
         }
         else
         {
             timer = 0;
-            checkLaserPos();
+            SpawnLaser();
         }
 
     }
-    private void checkLaserPos()
+
+    void SpawnLaser()
     {
-        if (laserPos == 1)
+        if(laserPosIndex >= 9)
         {
-            Instantiate(laser, new Vector3(One.position.x, transform.position.y, 0), Quaternion.identity);
-            laserPos += 1;
+            laserPosIndex = 0;
         }
-        else if (laserPos == 2)
+        else
         {
-            Instantiate(laser, new Vector3(Two.position.x, transform.position.y, 0), Quaternion.identity);
-            laserPos += 1;
-        }
-        else if (laserPos == 3)
-        {
-            Instantiate(laser, new Vector3(Three.position.x, transform.position.y, 0), Quaternion.identity);
-            laserPos += 1;
-        }
-        else if (laserPos == 4)
-        {
-            Instantiate(laser, new Vector3(Four.position.x, transform.position.y, 0), Quaternion.identity);
-            laserPos += 1;
-        }
-        else if (laserPos == 5)
-        {
-            Instantiate(laser, new Vector3(Five.position.x, transform.position.y, 0), Quaternion.identity);
-            laserPos += 1;
-        }
-        else if (laserPos == 6)
-        {
-            Instantiate(laser, new Vector3(Six.position.x, transform.position.y, 0), Quaternion.identity);
-            laserPos += 1;
-        }
-        else if (laserPos == 7)
-        {
-            Instantiate(laser, new Vector3(Seven.position.x, transform.position.y, 0), Quaternion.identity);
-            laserPos += 1;
-        }
-        else if (laserPos == 8)
-        {
-            Instantiate(laser, new Vector3(Eight.position.x, transform.position.y, 0), Quaternion.identity);
-            laserPos += 1;
-        }
-        else if (laserPos == 9)
-        {
-            Instantiate(laser, new Vector3(Nine.position.x, transform.position.y, 0), Quaternion.identity);
-            laserPos = 1;
+            Instantiate(laser, new Vector3(laserPos[laserPosIndex].position.x, transform.position.y, 0f), Quaternion.identity);
+            laserPosIndex++;
         }
     }
+   
 }
-
 
 LaserSpawner2.cs
 
