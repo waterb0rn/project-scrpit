@@ -8,8 +8,11 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 using static UnityEditor.Experimental.GraphView.GraphView;
 
-public class movement : MonoBehaviour
+public class PlayerScript : MonoBehaviour
 {
+    EscapeMenu escapeMenu;
+    [SerializeField] GameObject gameManager;
+
     private float Move;
     [SerializeField] private float Jump;
     [SerializeField] private float Speed;
@@ -21,23 +24,15 @@ public class movement : MonoBehaviour
     private bool inDashCD;
     private float dashCD = 1.5f;
     private bool invinc;
-    private bool inEscape = false;
-    private float currentTimeScale;
     private bool facingLeft;
-    public GameObject EscapeMenuUI;
     public bool ballActive = true;
-
     [SerializeField] private Sprite spriteColor;
     [SerializeField] private Sprite spriteColor1;
     [SerializeField] private Sprite spriteColor2;
     [SerializeField] private Sprite spriteColor3;
-
     public Transform player;
     public Transform respawnPoint;
     public Transform deadPoint;
-    
-
-
     private Rigidbody2D rb;
     private SpriteRenderer sr;
     private TrailRenderer tr;
@@ -50,22 +45,17 @@ public class movement : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
         tr = GetComponent<TrailRenderer>();
 
+        escapeMenu = gameManager.GetComponent<EscapeMenu>();
+
         canDash = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && inEscape == false)
-        {
-            PressEscape();
-        }
-        else if(Input.GetKeyDown(KeyCode.Escape) && inEscape == true)
-        {
-            UnEscape();
-        }
+        
 
-        if (isDashing == true || inEscape == true)
+        if (isDashing == true || escapeMenu.inEscape == true)
         {
             return;
         }
@@ -102,7 +92,7 @@ public class movement : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        if(isDashing == true || inEscape == true)
+        if(isDashing == true || escapeMenu.inEscape == true)
         {
             return;
         }
@@ -178,25 +168,7 @@ public class movement : MonoBehaviour
         }
     }
 
-    public void PressEscape()
-    {
-        currentTimeScale = Time.timeScale;
-        Time.timeScale = 0;
-        inEscape = true;
-        EscapeMenuUI.SetActive(true);
-    }
-    public void UnEscape()
-    {
-        Time.timeScale = currentTimeScale;
-        inEscape = false;
-        EscapeMenuUI.SetActive(false);
-    }
-
-    public void QuitToMenu()
-    {
-        Time.timeScale = currentTimeScale;
-        SceneManager.LoadScene(0);
-    }
+    
 }
 
 LaserSpawner.cs
@@ -404,3 +376,49 @@ public class BallScript : MonoBehaviour
 }
 
 
+EscapeMenu.cs
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public class EscapeMenu : MonoBehaviour
+{
+    public bool inEscape = false;
+    public GameObject EscapeMenuUI;
+    private float currentTimeScale;
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape) && inEscape == false)
+        {
+            PressEscape();
+        }
+        else if (Input.GetKeyDown(KeyCode.Escape) && inEscape == true)
+        {
+            UnEscape();
+        }
+    }
+    
+    public void PressEscape()
+    {
+        currentTimeScale = Time.timeScale;
+        Time.timeScale = 0;
+        inEscape = true;
+        EscapeMenuUI.SetActive(true);
+    }
+    public void UnEscape()
+    {
+        Time.timeScale = currentTimeScale;
+        inEscape = false;
+        EscapeMenuUI.SetActive(false);
+    }
+
+    public void QuitToMenu()
+    {
+        Time.timeScale = currentTimeScale;
+        SceneManager.LoadScene(0);
+    }
+}
