@@ -21,11 +21,11 @@ public class movement : MonoBehaviour
     private bool inDashCD;
     private float dashCD = 1.5f;
     private bool invinc;
-
     private bool inEscape = false;
     private float currentTimeScale;
     private bool facingLeft;
     public GameObject EscapeMenuUI;
+    public bool ballActive = true;
 
     [SerializeField] private Sprite spriteColor;
     [SerializeField] private Sprite spriteColor1;
@@ -127,6 +127,11 @@ public class movement : MonoBehaviour
             player.position = deadPoint.position;
             Invoke("RespawnPlayer", 1.5f);
         }
+        else if (other.gameObject.CompareTag("Ball"))
+        {
+            Destroy(other.gameObject);
+            ballActive = false;
+        }
     }
 
     public void RespawnPlayer()
@@ -218,7 +223,7 @@ public class LaserSpawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (timer <= spawnRate)
+        if (timer < spawnRate)
         {
             timer += Time.deltaTime;
         }
@@ -279,15 +284,14 @@ public class LaserSpawner2 : MonoBehaviour
 
     void SpawnLaser()
     {
-        if(laserPosIndex >= 5)
+        if(laserPosIndex >= 4)
         {
             laserPosIndex = 0;
         }
-        else
-        {
-            Instantiate(laser, new Vector3(transform.position.x, laserPos[laserPosIndex].position.y, 0f), Quaternion.identity);
-            laserPosIndex++;
-        }
+        
+        Instantiate(laser, new Vector3(transform.position.x, laserPos[laserPosIndex].position.y, 0f), Quaternion.identity);
+        laserPosIndex++;
+        
     }
 }
 
@@ -350,12 +354,14 @@ BallSpawner.cs
 
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using UnityEditor.Build;
 using UnityEngine;
 
 public class BallScript : MonoBehaviour
 {
-    
+    movement playerScript;
+    [SerializeField] private GameObject player;
 
     [SerializeField] private GameObject ball;
 
@@ -363,41 +369,37 @@ public class BallScript : MonoBehaviour
     private int currentSpawnIndex = 0;
     
 
-    private float timer;
+    private float timer = 0;
     [SerializeField] private float spawnRate;
 
     // Start is called before the first frame update
     void Start()
     {
+        playerScript = player.GetComponent<movement>();
+
         SpawnBall();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
-        if(timer >= spawnRate)
-        {
-            SpawnBall();
-            timer = 0;
-        }
-        else if(timer < spawnRate)
+        if(playerScript.ballActive == false)
         {
             timer += Time.deltaTime;
+            if(timer >= spawnRate )
+            {
+                SpawnBall();
+                timer = 0;
+            }
         }
+        
     }
 
     private void SpawnBall()
     {
-        if(currentSpawnIndex >= 10)
-        {
-            currentSpawnIndex = 0;
-        }
-        else
-        {
-            Instantiate(ball, new Vector3(currentSpawn[currentSpawnIndex].position.x, currentSpawn[currentSpawnIndex].position.y, 0f), Quaternion.identity);
-            currentSpawnIndex++;
-        }
+        currentSpawnIndex = Random.Range(0, 9);
+        Instantiate(ball, new Vector3(currentSpawn[currentSpawnIndex].position.x, currentSpawn[currentSpawnIndex].position.y, 0f), Quaternion.identity);
+        playerScript.ballActive = true;
     }
 }
 
