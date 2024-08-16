@@ -422,3 +422,78 @@ public class EscapeMenu : MonoBehaviour
         SceneManager.LoadScene(0);
     }
 }
+
+
+BossHealth.cs
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEditor.Search;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class BossHealth : MonoBehaviour
+{
+    [SerializeField] Image health;
+    float healthAmount = 10;
+    PlayerScript playerScript;
+    [SerializeField] GameObject player;
+    bool hasRun;
+    [SerializeField] Sprite Sprite;
+    [SerializeField] Sprite Sprite1;
+    [SerializeField] Sprite Sprite2;
+    [SerializeField] Sprite Sprite3;
+    [SerializeField] GameObject boss;
+    SpriteRenderer bossSr;
+
+    private void Start()
+    {
+        playerScript = player.GetComponent<PlayerScript>();
+        bossSr = boss.GetComponent<SpriteRenderer>();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if(healthAmount > 5)
+        {
+            Sprite = Sprite1;
+        }
+        else if (healthAmount <= 0)
+        {
+            Sprite = Sprite3;
+            Time.timeScale = 0;
+            wait();
+            //load game complete scene
+        }
+        else if (healthAmount <= 5)
+        {
+            Sprite = Sprite2;
+        }
+        
+        if (playerScript.ballActive == true)
+        {
+            hasRun = false;
+        }
+
+        if (playerScript.ballActive == false && !hasRun)
+        {
+            hasRun = true;
+            TakeDamage(1);
+        }
+        bossSr.sprite = Sprite;
+    }
+
+    void TakeDamage(float amount)
+    {
+        healthAmount -= amount;
+        health.fillAmount = healthAmount / 10;
+    }
+
+    IEnumerator wait()
+    {
+        yield return new WaitForSeconds(3);
+    }
+}
+
+
