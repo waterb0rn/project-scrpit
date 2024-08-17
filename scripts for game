@@ -430,6 +430,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.Search;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class BossHealth : MonoBehaviour
@@ -461,10 +462,7 @@ public class BossHealth : MonoBehaviour
         }
         else if (healthAmount <= 0)
         {
-            Sprite = Sprite3;
-            Time.timeScale = 0;
-            wait();
-            //load game complete scene
+            SceneManager.LoadScene(2);
         }
         else if (healthAmount <= 5)
         {
@@ -476,7 +474,7 @@ public class BossHealth : MonoBehaviour
             hasRun = false;
         }
 
-        if (playerScript.ballActive == false && !hasRun)
+        if (playerScript.ballActive == false && !hasRun || Input.GetKeyDown(KeyCode.Y))
         {
             hasRun = true;
             TakeDamage(1);
@@ -489,11 +487,4 @@ public class BossHealth : MonoBehaviour
         healthAmount -= amount;
         health.fillAmount = healthAmount / 10;
     }
-
-    IEnumerator wait()
-    {
-        yield return new WaitForSeconds(3);
-    }
 }
-
-
